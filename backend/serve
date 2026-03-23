@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Laravel needs PHP 8.3+. XAMPP's `php` is often 7.4 — use Homebrew PHP when present.
+set -euo pipefail
+cd "$(dirname "$0")"
+
+if [[ -n "${PHP_BIN:-}" && -x "$PHP_BIN" ]]; then
+  exec "$PHP_BIN" artisan serve "$@"
+fi
+
+for p in \
+  /opt/homebrew/opt/php/bin/php \
+  /opt/homebrew/opt/php@8.4/bin/php \
+  /opt/homebrew/opt/php@8.3/bin/php \
+  /usr/local/opt/php/bin/php
+do
+  if [[ -x "$p" ]]; then
+    exec "$p" artisan serve "$@"
+  fi
+done
+
+echo "error: No PHP 8.3+ found. Install: brew install php" >&2
+echo "Then run:  /opt/homebrew/opt/php/bin/php artisan serve" >&2
+exit 1

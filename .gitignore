@@ -1,3 +1,8 @@
+# Frontend env (Vite)
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+
 # Monorepo (explicit)
 frontend/dist
 frontend/dist-ssr

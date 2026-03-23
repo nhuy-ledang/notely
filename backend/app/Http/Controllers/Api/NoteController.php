@@ -7,6 +7,7 @@ use App\Models\Note;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 
 class NoteController extends Controller
@@ -30,19 +31,40 @@ class NoteController extends Controller
             });
         }
 
+        if ($request->query('filter') === 'pinned') {
+            $query->where('pinned', true);
+        }
+
+        if ($request->filled('collection_id')) {
+            $cid = (int) $request->query('collection_id');
+            abort_unless($user->collections()->whereKey($cid)->exists(), 404);
+            $query->where('collection_id', $cid);
+        }
+
         return response()->json($query->paginate($perPage));
     }
 
     public function store(Request $request): JsonResponse
     {
+        /** @var User $user */
+        $user = $request->user();
+
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'body' => ['nullable', 'string'],
             'pinned' => ['sometimes', 'boolean'],
+            'tags' => ['sometimes', 'array', 'max:24'],
+            'tags.*' => ['string', 'max:48'],
+            'collection_id' => [
+                'sometimes',
+                'nullable',
+                'integer',
+                Rule::exists('collections', 'id')->where('user_id', $user->id),
+            ],
         ]);
-
-        /** @var User $user */
-        $user = $request->user();
+        if (! array_key_exists('tags', $validated)) {
+            $validated['tags'] = [];
+        }
         $note = $user->notes()->create($validated);
 
         return response()->json($note, Response::HTTP_CREATED);
@@ -57,10 +79,21 @@ class NoteController extends Controller
 
     public function update(Request $request, string $note): JsonResponse
     {
+        /** @var User $user */
+        $user = $request->user();
+
         $validated = $request->validate([
             'title' => ['sometimes', 'string', 'max:255'],
             'body' => ['sometimes', 'nullable', 'string'],
             'pinned' => ['sometimes', 'boolean'],
+            'tags' => ['sometimes', 'array', 'max:24'],
+            'tags.*' => ['string', 'max:48'],
+            'collection_id' => [
+                'sometimes',
+                'nullable',
+                'integer',
+                Rule::exists('collections', 'id')->where('user_id', $user->id),
+            ],
         ]);
 
         $model = $this->noteForUser($request, $note);

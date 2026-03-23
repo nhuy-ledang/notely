@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['title', 'body', 'pinned'])]
+#[Fillable(['title', 'body', 'pinned', 'tags', 'collection_id'])]
 class Note extends Model
 {
     /**
@@ -16,7 +16,19 @@ class Note extends Model
     {
         return [
             'pinned' => 'boolean',
+            'tags' => 'array',
         ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        $data = parent::toArray();
+        $data['tags'] = is_array($this->tags) ? $this->tags : [];
+
+        return $data;
     }
 
     /**
@@ -25,5 +37,13 @@ class Note extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * @return BelongsTo<Collection, $this>
+     */
+    public function collection(): BelongsTo
+    {
+        return $this->belongsTo(Collection::class);
     }
 }

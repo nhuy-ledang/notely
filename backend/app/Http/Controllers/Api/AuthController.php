@@ -93,6 +93,8 @@ class AuthController extends Controller
             'name' => $user->name,
             'email' => $user->email,
             'preferences' => $user->preferences ?? [],
+            'google_linked' => $user->google_id !== null,
+            'oauth_only_password' => (bool) $user->oauth_only_password,
             'created_at' => $user->created_at?->toIso8601String(),
             'updated_at' => $user->updated_at?->toIso8601String(),
         ];

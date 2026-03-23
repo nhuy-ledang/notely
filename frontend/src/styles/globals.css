@@ -1,4 +1,367 @@
-body {
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ─── Design tokens (single source for the whole app) ─── */
+@theme {
+  --font-headline: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-label: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --color-background: #f7f9fb;
+  --color-tertiary-container: #885500;
+  --color-secondary-container: #d0e1fb;
+  --color-on-tertiary-fixed-variant: #653e00;
+  --color-on-primary-fixed: #0f0069;
+  --color-tertiary: #684000;
+  --color-surface-container-high: #e6e8ea;
+  --color-on-primary-container: #dad7ff;
+  --color-on-error-container: #93000a;
+  --color-on-tertiary: #ffffff;
+  --color-error: #ba1a1a;
+  --color-on-background: #191c1e;
+  --color-inverse-surface: #2d3133;
+  --color-error-container: #ffdad6;
+  --color-on-primary: #ffffff;
+  --color-surface-container: #eceef0;
+  --color-on-secondary-container: #54647a;
+  --color-tertiary-fixed-dim: #ffb95f;
+  --color-surface-container-highest: #e0e3e5;
+  --color-on-error: #ffffff;
+  --color-surface-container-low: #f2f4f6;
+  --color-surface: #f7f9fb;
+  --color-on-tertiary-container: #ffd4a4;
+  --color-surface-container-lowest: #ffffff;
+  --color-primary-fixed: #e2dfff;
+  --color-primary-container: #4f46e5;
+  --color-on-secondary-fixed: #0b1c30;
+  --color-tertiary-fixed: #ffddb8;
+  --color-on-surface-variant: #464555;
+  --color-on-surface: #191c1e;
+  --color-surface-variant: #e0e3e5;
+  --color-on-secondary: #ffffff;
+  --color-surface-dim: #d8dadc;
+  --color-primary-fixed-dim: #c3c0ff;
+  --color-on-tertiary-fixed: #2a1700;
+  --color-surface-bright: #f7f9fb;
+  --color-outline-variant: #c7c4d8;
+  --color-on-secondary-fixed-variant: #38485d;
+  --color-inverse-on-surface: #eff1f3;
+  --color-on-primary-fixed-variant: #3323cc;
+  --color-secondary-fixed: #d3e4fe;
+  --color-outline: #777587;
+  --color-surface-tint: #4d44e3;
+  --color-secondary-fixed-dim: #b7c8e1;
+  --color-inverse-primary: #c3c0ff;
+  --color-secondary: #505f76;
+  --color-primary: #3525cd;
+
+  --radius-4xl: 2rem;
+}
+
+/*
+ * Dark theme: semantic surfaces + text (accent --color-primary* vẫn do personalization inline trên html).
+ * Khối này sửa lệch màu: sidebar/header tối + vùng chính vẫn sáng vì token surface chưa đổi.
+ */
+html.dark {
+  --color-background: #0b0f14;
+  --color-surface-dim: #070a0e;
+  --color-surface: #10151c;
+  --color-surface-bright: #141a22;
+  --color-surface-container-lowest: #181f28;
+  --color-surface-container-low: #1d2530;
+  --color-surface-container: #252d3a;
+  --color-surface-container-high: #2d3644;
+  --color-surface-container-highest: #353e4f;
+  --color-surface-variant: #2d3644;
+  --color-on-surface: #eceef2;
+  --color-on-surface-variant: #aab2bf;
+  --color-on-background: #eceef2;
+  --color-outline: #8b93a1;
+  --color-outline-variant: #424a57;
+  --color-secondary: #9ca6b4;
+  --color-on-secondary-container: #ced3dc;
+  --color-secondary-container: #354050;
+  --color-on-secondary-fixed: #e2e7f0;
+  --color-secondary-fixed: #3d4f66;
+  --color-secondary-fixed-dim: #2f3d50;
+  --color-inverse-surface: #e2e4e9;
+  --color-inverse-on-surface: #1c1b1f;
+  --color-error-container: #5c2328;
+  --color-on-error-container: #ffdad7;
+}
+
+@layer base {
+  body {
+    margin: 0;
+    font-family: var(--font-body);
+    background-color: var(--color-background);
+    color: var(--color-on-background);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-headline);
+  }
+}
+
+@layer components {
+  .material-symbols-outlined {
+    font-variation-settings:
+      "FILL" 0,
+      "wght" 400,
+      "GRAD" 0,
+      "opsz" 24;
+  }
+
+  .glass-effect {
+    background: rgb(255 255 255 / 0.8);
+    backdrop-filter: blur(20px);
+  }
+
+  .dark .glass-effect {
+    background: rgb(15 23 42 / 0.75);
+  }
+
+  .bg-editorial-gradient {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-container) 100%);
+  }
+
+  /* TipTap / ProseMirror (note editor) */
+  .prose-note .ProseMirror {
+    outline: none;
+  }
+
+  .prose-note .ProseMirror img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    border: 1px solid rgb(199 196 216 / 0.35);
+  }
+
+}
+
+/* Stitch / legacy class names → shared fonts (tokens in @theme) */
+@layer utilities {
+  .font-manrope {
+    font-family: var(--font-headline);
+  }
+
+  .font-inter {
+    font-family: var(--font-body);
+  }
+
+  .font-playfair-editorial {
+    font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+    font-style: italic;
+  }
+}
+
+/*
+ * TipTap task list — NOT inside @layer so this wins over Tailwind preflight (label/display rules).
+ * DOM: ul[data-type=taskList] > li > label > input + span, div (contentDOM) > p
+ * TipTap node view sets data-checked on li but often omits data-type in the live DOM, so we use .notely-task-item + [data-checked].
+ */
+.prose-note ul[data-type='taskList'] {
+  list-style: none !important;
+  padding-left: 0 !important;
+  margin: 0.75rem 0;
+}
+
+.prose-note ul[data-type='taskList'] > li.notely-task-item,
+.prose-note ul[data-type='taskList'] > li[data-checked] {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: flex-start !important;
+  gap: 0.5rem;
+  margin: 0.25rem 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+.prose-note ul[data-type='taskList'] > li.notely-task-item > label,
+.prose-note ul[data-type='taskList'] > li[data-checked] > label {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
+  align-items: flex-start !important;
+  width: auto !important;
+  max-width: 2.75rem !important;
+  min-width: 1.25rem !important;
+  margin: 0 !important;
+  padding: 0.3em 0 0 0 !important;
+  cursor: pointer;
+  position: relative;
+}
+
+.prose-note ul[data-type='taskList'] > li.notely-task-item > label input[type='checkbox'],
+.prose-note ul[data-type='taskList'] > li[data-checked] > label input[type='checkbox'] {
+  margin: 0 !important;
+  width: 1rem !important;
+  height: 1rem !important;
+  flex-shrink: 0 !important;
+  accent-color: var(--color-primary-container);
+}
+
+.prose-note ul[data-type='taskList'] > li.notely-task-item > label > span,
+.prose-note ul[data-type='taskList'] > li[data-checked] > label > span {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.prose-note ul[data-type='taskList'] > li.notely-task-item > div,
+.prose-note ul[data-type='taskList'] > li[data-checked] > div {
+  flex: 1 1 0% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.prose-note ul[data-type='taskList'] > li.notely-task-item > div > p,
+.prose-note ul[data-type='taskList'] > li[data-checked] > div > p {
+  margin-top: 0 !important;
+  margin-bottom: 0.25em;
+}
+
+.prose-note ul[data-type='taskList'] > li.notely-task-item > div > p:first-of-type,
+.prose-note ul[data-type='taskList'] > li[data-checked] > div > p:first-of-type {
+  margin-top: 0 !important;
+}
+
+/* Task đã tick: gạch ngang nội dung (không gạch lên ô checkbox) */
+.prose-note ul[data-type='taskList'] > li[data-checked='true'] > div,
+.prose-note ul[data-type='taskList'] > li.notely-task-item[data-checked='true'] > div {
+  text-decoration: line-through;
+  opacity: 0.72;
+}
+
+/* Chú thích ảnh (đoạn ngay sau img khi chọn hiển thị) */
+.prose-note .ProseMirror p.notely-image-caption {
+  margin-top: 0.35rem !important;
+  margin-bottom: 0.75rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-on-surface-variant);
+}
+
+/* Ghi âm nhúng: trình phát native (play/pause, tua, thời lượng) */
+.prose-note .ProseMirror .notely-voice-audio-wrap {
+  margin: 0.85rem 0;
+  max-width: 36rem;
+  padding: 0.65rem 0.85rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgb(199 196 216 / 0.45);
+  background: var(--color-surface-container-low);
+}
+
+.prose-note .ProseMirror .notely-voice-audio-label {
+  margin-bottom: 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+}
+
+.prose-note .ProseMirror audio.notely-voice-audio {
+  display: block;
+  width: 100%;
+  min-height: 2.5rem;
+  border-radius: 0.5rem;
+}
+
+.dark .prose-note .ProseMirror .notely-voice-audio-wrap {
+  border-color: rgb(148 163 184 / 0.28);
+  background: rgb(30 41 59 / 0.45);
+}
+
+/*
+ * Tiêu đề trong editor — !important để thắng Tailwind preflight (h1–h6 thường bị reset inherit)
+ * và class text-lg trên .ProseMirror.
+ */
+.prose-note .ProseMirror h1 {
+  margin: 0.75rem 0 0.35rem !important;
+  font-family: var(--font-headline) !important;
+  font-size: 2rem !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.prose-note .ProseMirror h2 {
+  margin: 0.65rem 0 0.3rem !important;
+  font-family: var(--font-headline) !important;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+}
+
+.prose-note .ProseMirror h3 {
+  margin: 0.55rem 0 0.25rem !important;
+  font-family: var(--font-headline) !important;
+  font-size: 1.2rem !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+}
+
+/* Danh sách gạch ngang */
+.prose-note .ProseMirror ul.notely-list-dashed {
+  list-style: none;
+  padding-left: 0;
+  margin: 0.5rem 0;
+}
+
+.prose-note .ProseMirror ul.notely-list-dashed > li {
+  position: relative;
+  padding-left: 1.15em;
+  margin: 0.2em 0;
+}
+
+.prose-note .ProseMirror ul.notely-list-dashed > li::before {
+  content: '–';
+  position: absolute;
+  left: 0;
+  color: var(--color-on-surface-variant);
+  font-weight: 600;
+}
+
+/* Bảng */
+.prose-note .ProseMirror table.notely-editor-table,
+.prose-note .ProseMirror table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.75rem 0;
+  table-layout: auto;
+}
+
+.prose-note .ProseMirror table td,
+.prose-note .ProseMirror table th {
+  border: 1px solid rgb(199 196 216 / 0.55);
+  padding: 0.45rem 0.65rem;
+  vertical-align: top;
+  min-width: 3rem;
+}
+
+.prose-note .ProseMirror table th {
+  background: var(--color-surface-container-low);
+  font-weight: 700;
+  font-size: 0.9em;
+}
+
+.prose-note .ProseMirror table p {
   margin: 0;
-  font-family: sans-serif;
+}
+
+.dark .prose-note .ProseMirror table td,
+.dark .prose-note .ProseMirror table th {
+  border-color: rgb(148 163 184 / 0.35);
+}
+
+.dark .prose-note .ProseMirror table th {
+  background: rgb(30 41 59 / 0.5);
 }
