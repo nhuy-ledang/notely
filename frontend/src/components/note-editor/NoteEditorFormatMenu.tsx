@@ -60,6 +60,8 @@ export function NoteEditorFormatMenu({ editor: e, open, onClose }: NoteEditorFor
     return null
   }
 
+  const chain = () => e.chain().focus() as any
+
   const bodyStyleActive =
     !e.isActive('heading') && !e.isActive('blockquote') && !e.isActive('codeBlock') && !e.isActive('code')
 
@@ -69,17 +71,17 @@ export function NoteEditorFormatMenu({ editor: e, open, onClose }: NoteEditorFor
       role="menu"
     >
       <div className="flex flex-wrap items-center gap-0.5 border-b border-outline-variant/20 px-3 pb-2 pt-1">
-        {rowBtn(e.isActive('bold'), () => e.chain().focus().toggleBold().run(), 'Bold', <strong className="px-1.5">B</strong>)}
-        {rowBtn(e.isActive('italic'), () => e.chain().focus().toggleItalic().run(), 'Italic', <em className="px-1.5">I</em>)}
+        {rowBtn(e.isActive('bold'), () => chain().toggleBold().run(), 'Bold', <strong className="px-1.5">B</strong>)}
+        {rowBtn(e.isActive('italic'), () => chain().toggleItalic().run(), 'Italic', <em className="px-1.5">I</em>)}
         {rowBtn(
           e.isActive('underline'),
-          () => e.chain().focus().toggleUnderline().run(),
+          () => chain().toggleUnderline().run(),
           'Underline',
           <span className="px-1.5 underline">U</span>,
         )}
         {rowBtn(
           e.isActive('strike'),
-          () => e.chain().focus().toggleStrike().run(),
+          () => chain().toggleStrike().run(),
           'Strikethrough',
           <s className="px-1.5">S</s>,
         )}
@@ -92,14 +94,14 @@ export function NoteEditorFormatMenu({ editor: e, open, onClose }: NoteEditorFor
               title={label}
               className="h-7 w-7 rounded-md border border-outline-variant/30 shadow-sm transition-transform hover:scale-110"
               style={{ backgroundColor: color }}
-              onClick={() => e.chain().focus().toggleHighlight({ color }).run()}
+              onClick={() => chain().toggleHighlight({ color }).run()}
             />
           ))}
           <button
             type="button"
             title="Xóa highlight"
             className="rounded-md px-2 text-[10px] font-semibold text-on-surface-variant hover:bg-surface-container-low"
-            onClick={() => e.chain().focus().unsetHighlight().run()}
+            onClick={() => chain().unsetHighlight().run()}
           >
             ✕
           </button>
@@ -111,25 +113,25 @@ export function NoteEditorFormatMenu({ editor: e, open, onClose }: NoteEditorFor
           'Title',
           e.isActive('heading', { level: 1 }),
           'text-xl font-extrabold tracking-tight',
-          () => e.chain().focus().setHeading({ level: 1 }).run(),
+          () => chain().setHeading({ level: 1 }).run(),
           onClose,
         )}
         {styleRow(
           'Heading',
           e.isActive('heading', { level: 2 }),
           'text-lg font-bold',
-          () => e.chain().focus().setHeading({ level: 2 }).run(),
+          () => chain().setHeading({ level: 2 }).run(),
           onClose,
         )}
         {styleRow(
           'Subheading',
           e.isActive('heading', { level: 3 }),
           'text-base font-bold',
-          () => e.chain().focus().setHeading({ level: 3 }).run(),
+          () => chain().setHeading({ level: 3 }).run(),
           onClose,
         )}
-        {styleRow('Body', bodyStyleActive, 'text-sm font-normal', () => e.chain().focus().setParagraph().run(), onClose)}
-        {styleRow('Monostyled', e.isActive('code'), 'font-mono text-sm', () => e.chain().focus().toggleCode().run(), onClose)}
+        {styleRow('Body', bodyStyleActive, 'text-sm font-normal', () => chain().setParagraph().run(), onClose)}
+        {styleRow('Monostyled', e.isActive('code'), 'font-mono text-sm', () => chain().toggleCode().run(), onClose)}
         {styleRow(
           'Bulleted list',
           e.isActive('bulletList'),
@@ -158,7 +160,7 @@ export function NoteEditorFormatMenu({ editor: e, open, onClose }: NoteEditorFor
           'Block quote',
           e.isActive('blockquote'),
           'text-sm border-l-2 border-outline pl-2',
-          () => e.chain().focus().toggleBlockquote().run(),
+          () => chain().toggleBlockquote().run(),
           onClose,
         )}
       </div>
