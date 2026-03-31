@@ -5,17 +5,19 @@ import type { ApiNote } from '@/types/note'
 export const TOKEN_STORAGE_KEY = 'notely_access_token'
 
 export function getApiBase(): string {
-  const raw = import.meta.env.VITE_API_URL ?? ''
+  const raw = (import.meta.env.VITE_API_URL ?? '').trim()
   return raw.replace(/\/$/, '')
+}
+
+function buildApiUrl(path: string): string {
+  const base = getApiBase()
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`
+  return base ? `${base}${normalizedPath}` : normalizedPath
 }
 
 /** Full-page redirect; backend must have GOOGLE_CLIENT_ID / SECRET and matching redirect URI. */
 export function getGoogleOAuthUrl(): string {
-  const base = getApiBase()
-  if (!base) {
-    throw new Error('VITE_API_URL is not set')
-  }
-  return `${base}/auth/google`
+  return buildApiUrl('/auth/google')
 }
 
 /**
@@ -90,12 +92,7 @@ export async function apiFetch<T>(
   options: RequestInit & { token?: string | null } = {},
 ): Promise<T> {
   const { token, headers, ...rest } = options
-  const base = getApiBase()
-  if (!base) {
-    throw new ApiError('VITE_API_URL is not set', 0, null)
-  }
-
-  const url = `${base}${path.startsWith('/') ? path : `/${path}`}`
+  const url = buildApiUrl(path)
   const h = new Headers(headers)
   h.set('Accept', 'application/json')
   if (rest.body !== undefined && !(rest.body instanceof FormData) && !h.has('Content-Type')) {

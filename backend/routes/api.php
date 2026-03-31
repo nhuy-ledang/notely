@@ -8,6 +8,9 @@ use App\Http\Controllers\Api\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function (): void {
+    // Explicitly handle browser preflight requests on shared hosting setups.
+    Route::options('/{any}', fn () => response()->noContent())->where('any', '.*');
+
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
 
