@@ -50,6 +50,20 @@ git pull
 ./deploy.sh
 ```
 
+Neu hosting bi loi thread khi build frontend (rayon WouldBlock), chay:
+
+```bash
+cd /home/u736596896/domains/notely.brandie.io.vn/app_src
+RAYON_NUM_THREADS=1 UV_THREADPOOL_SIZE=1 ./deploy.sh
+```
+
+Neu server qua yeu/khong co npm, build local roi upload `frontend/dist`, sau do chay:
+
+```bash
+cd /home/u736596896/domains/notely.brandie.io.vn/app_src
+SKIP_FRONTEND_BUILD=1 ./deploy.sh
+```
+
 ## 4) Luu y quan trong
 
 - Khong can set `frontend/.env` tren production neu API va SPA cung 1 domain.
